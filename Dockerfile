@@ -25,9 +25,8 @@ WORKDIR /local
 # Copy select files needed for installing requirements.
 # We only copy what we need here so small changes to the repository does not trigger re-installation of the requirements.
 RUN python -m pip install git+https://github.com/allenai/allennlp.git
-COPY install_requirements.sh .
 COPY run_model.sh .
-RUN run_model.sh
+COPY predictions.json .
 
 # EXPOSE 8000
 Cmd ["/bin/bash"]
