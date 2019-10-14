@@ -1,6 +1,4 @@
-from overrides import overrides
 from allennlp.models.archival import load_archive
-from allennlp.predictors import Predictor
 from allennlp.common.file_utils import cached_path
 from allennlp.predictors.predictor import Predictor
 import reading_comprehension
