@@ -17,7 +17,11 @@ from allennlp.data.fields import Field, TextField, IndexField, LabelField, ListF
 from allennlp.data.instance import Instance
 from allennlp.data.token_indexers.token_indexer import TokenIndexer
 from allennlp.data.token_indexers.wordpiece_indexer import WordpieceIndexer
-from allennlp.data.tokenizers import Token, Tokenizer, WordTokenizer
+from allennlp.data.tokenizers import Token, Tokenizer
+try:
+    from allennlp.data.tokenizers import SpacyTokenizer as word_tokenizer
+except Exception:
+    from allennlp.data.tokenizers import WordTokenizer as word_tokenizer
 
 
 from pytorch_pretrained_bert import BertTokenizer
@@ -83,7 +87,7 @@ class BertDropReader(DatasetReader):
         self.answer_type = answer_type
         self.use_validated = use_validated
         self.wordpiece_numbers = wordpiece_numbers
-        self.number_tokenizer = number_tokenizer or WordTokenizer()
+        self.number_tokenizer = number_tokenizer or word_tokenizer()
         self.exp_search = exp_search
         self.max_depth = max_depth
         self.extra_numbers = extra_numbers
@@ -164,8 +168,8 @@ class BertDropReader(DatasetReader):
         for question_answer in passage_info["qa_pairs"]:
             question_id = question_answer["qid"]
             question_text = question_answer["question"].strip()
-            if question_answer["answers"][0][0] != "":
-                dataset = question_answer["dataset"]
+            dataset = question_answer["dataset"]
+            if len(question_answer["answers"]) != 0 and question_answer["answers"][0][0] != "":
                 answer_annotations = question_answer["answers"]
             else:
                 answer_annotations = None

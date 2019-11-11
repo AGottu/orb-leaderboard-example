@@ -1,30 +1,25 @@
-FROM python:3.6.8-jessie
+FROM  nvidia/cuda:10.0-base-ubuntu18.04
 
-ENV LC_ALL=C.UTF-8
-ENV LANG=C.UTF-8
+RUN apt-get update && apt-get install -y --no-install-recommends \
+         build-essential \
+         wget \
+         cmake \
+         ca-certificates \
+         git \
+         curl \
+         python3.6-dev \
+         gcc \
+         python3-setuptools \
+         python3-pip
 
-# Install base packages.
-RUN apt-get update --fix-missing && apt-get install -y \
-    bzip2 \
-    ca-certificates \
-    curl \
-    gcc \
-    git \
-    libc-dev \
-    libglib2.0-0 \
-    libsm6 \
-    libxext6 \
-    libxrender1 \
-    wget \
-    libevent-dev \
-    build-essential && \
-    rm -rf /var/lib/apt/lists/*
+RUN ln -s /usr/bin/python3 /usr/bin/python
+RUN ln -s /usr/bin/pip3 /usr/bin/pip
 
-WORKDIR /local
+RUN python3 -m pip install git+https://github.com/allenai/allennlp.git
 
 # Copy select files needed for installing requirements.
 # We only copy what we need here so small changes to the repository does not trigger re-installation of the requirements.
-RUN python -m pip install git+https://github.com/allenai/allennlp.git
+
 COPY ./reading_comprehension ./reading_comprehension
 COPY run_model.sh .
 COPY predictor.py .
